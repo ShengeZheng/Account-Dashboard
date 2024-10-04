@@ -1,10 +1,8 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 from utils.binance import init_exchange, init_db, update_data
-from utils.constants import CONFIG
 
-BINANCE_UNI_API_KEY = CONFIG['binance_uni']['API_KEY']
-BINANCE_UNI_SECRET = CONFIG['binance_uni']['SECRET']
+from utils.constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
 
 config = {
     'exchange_id': 'binance',
@@ -20,7 +18,9 @@ config = {
 USER = 'binance1'
 
 if __name__ == '__main__':
+
     binance = init_exchange(config)
+    binance.proxies = {"http":'http://127.0.0.1:7890', "https":"http://127.0.0.1:7890"}
     init_db(USER)
 
     scheduler = BlockingScheduler()

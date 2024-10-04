@@ -4,10 +4,6 @@ import utils.bybit as bybit_utils
 
 from utils.constants import BYBIT_API_KEY_1, BYBIT_SECRET_1, BINANCE_UNI_API_KEY_2, BINANCE_UNI_SECRET_2
 
-
-
-
-
 @pytest.fixture
 def bybit():
     config = {
