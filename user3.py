@@ -1,8 +1,9 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from utils.binance import init_exchange, init_db, update_data
 
 from utils.constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
+import asyncio
 
 config = {
     'exchange_id': 'binance',
@@ -23,10 +24,10 @@ if __name__ == '__main__':
     binance.proxies = {"http":'http://127.0.0.1:7890', "https":"http://127.0.0.1:7890"}
     init_db(USER)
 
-    scheduler = BlockingScheduler()
+    scheduler = AsyncIOScheduler()
     scheduler.add_job(update_data, 'interval', seconds=15, args=[binance, USER])
-
+    scheduler.start()
     try:
-        scheduler.start()
+        asyncio.get_event_loop().run_forever()  
     except (KeyboardInterrupt, SystemExit):
         pass
