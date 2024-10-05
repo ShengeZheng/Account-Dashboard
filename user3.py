@@ -5,24 +5,25 @@ from utils.binance import init_exchange, init_db, update_data
 from utils.constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
 import asyncio
 import ccxt
+async def main():
 
-USER = 'binance1'
-
-if __name__ == '__main__':
-
-    binance = ccxt.binance({
+    user = 'zsg'
+    exchange = ccxt.binance({
     'apiKey': BINANCE_UNI_API_KEY,
     'secret': BINANCE_UNI_SECRET,
     'enableRateLimit': True,
     'options': {'defaultType': 'future'}
     })
-    # binance.proxies = {"http":'http://127.0.0.1:7890', "https":"http://127.0.0.1:7890"}
-    init_db(USER)
+    # exchange.http_proxy = {"https": "http://127.0.0.1:7890", "http": "http://127.0.0.1:7890"}
+    
+    # 初始化数据库表
+    await init_db(user)
+    
+    # 每隔 60 秒更新一次数据
+    while True:
+        await update_data(exchange, user)
+        await asyncio.sleep(60)
 
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(update_data, 'interval', seconds=15, args=[binance, USER])
-    scheduler.start()
-    try:
-        asyncio.get_event_loop().run_forever()  
-    except (KeyboardInterrupt, SystemExit):
-        pass
+if __name__ == "__main__":
+    asyncio.run(main())
+

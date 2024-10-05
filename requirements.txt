@@ -1,3 +1,5 @@
 APScheduler==3.10.4
 ccxt==4.4.6
 pytest==8.3.2
+aiosqlite==0.20.0
+python-dotenv==1.0.1
