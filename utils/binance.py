@@ -47,7 +47,7 @@ async def update_data(exchange: ccxt.Exchange, user):
     timestamp = int(time.time())
     try:
         print("1")
-        await exchange.load_markets()
+        # await exchange.load_markets()
         print("2")
         balance = await exchange.fetch_balance()
         print("3")
