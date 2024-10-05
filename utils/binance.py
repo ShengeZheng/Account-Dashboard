@@ -46,10 +46,13 @@ async def update_data(exchange: ccxt.Exchange, user):
 
     timestamp = int(time.time())
     try:
+        print("1")
         await exchange.load_markets()
+        print("2")
         balance = await exchange.fetch_balance()
+        print("3")
         positions = await exchange.fetch_positions()
-
+        print("4")
         net_value = float(balance['USDT']['total'])
         c.execute(f"INSERT INTO {user}_total_equity VALUES (?, ?)", (timestamp, net_value))
 
