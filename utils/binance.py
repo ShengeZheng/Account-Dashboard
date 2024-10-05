@@ -5,7 +5,7 @@ import aiosqlite  # 用于异步操作 SQLite 数据库
 import ccxt.async_support as ccxt  # 使用 ccxt 的异步版本
 import logging
 from logging.handlers import RotatingFileHandler
-from utils.constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
+from constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
 
 # 日志文件路径
 LOG_FILE = 'binance_monitor.log'
