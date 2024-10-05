@@ -21,53 +21,6 @@ logger = logging.getLogger('position_monitor')
 logger.setLevel(logging.INFO)
 logger.addHandler(log_handler)
 
-# 记录启动日志
-logger.info("Position Monitor Bot started. Log file cleared.")
-
-@dataclass
-class Coin:
-    asset: str
-    total_wallet_balance: float
-    cross_margin_asset: float
-    cross_margin_borrowed: float
-    cross_margin_free: float
-    cross_margin_interest: float
-    cross_margin_locked: float
-    um_wallet_balance: float
-    um_unrealized_pnl: float
-    cm_wallet_balance: float
-    cm_unrealized_pnl: float
-    price_in_usdt: float
-
-@dataclass
-class CmPosition:
-    symbol: str
-    position_amt: float
-    entry_price: float
-    mark_price: float
-    un_realized_profit: float
-    liquidation_price: float
-    leverage: float
-    position_side: str
-    max_qty: float
-    notional_value: float
-    break_even_price: float
-    contract_size: float
-
-@dataclass
-class UmPosition:
-    symbol: str
-    position_amt: float
-    entry_price: float
-    mark_price: float
-    un_realized_profit: float
-    liquidation_price: float
-    leverage: float
-    position_side: str
-    max_notional_value: float
-    notional: float
-    break_even_price: float
-
 def init_exchange(config: Dict[str, Any]) -> ccxt.Exchange:
     exchange_class = getattr(ccxt, config['exchange_id'])
     exchange = exchange_class(config)
@@ -119,7 +72,7 @@ async def update_data(exchange: ccxt.Exchange, user):
 
         logger.info(f"Successfully fetched account info. Net value: {net_value}")
         logger.info(f"Number of active positions: {len(active_positions)}")
-        return net_value, active_positions
+
     except ccxt.NetworkError as e:
         logger.error(f"Network error when fetching account info: {e}")
     except ccxt.ExchangeError as e:
@@ -129,4 +82,6 @@ async def update_data(exchange: ccxt.Exchange, user):
 
     conn.commit()
     conn.close()
-    print("Data updated")
+
+
+
