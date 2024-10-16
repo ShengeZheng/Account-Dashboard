@@ -89,7 +89,7 @@ async def update_data(exchange: ccxt.Exchange, user: str):
                                        (timestamp, symbol, amount if pos['side'] == 'long' else -amount))
             if len(active_positions) == 0:
                 await conn.execute(f"INSERT OR REPLACE INTO {user}_net_positions VALUES (?, ?, ?)", 
-                                       (timestamp, symbol, 0))
+                                       (timestamp, "BTCUSDT", 0))
             # 记录日志
             logger.info(f"Successfully fetched account info. Net value: {net_value}")
             logger.info(f"Number of active positions: {len(active_positions)}")
