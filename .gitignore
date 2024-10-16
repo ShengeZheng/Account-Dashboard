@@ -4,3 +4,4 @@ config.cfg
 .vscode/
 .*cache
 *.log
+*.db
