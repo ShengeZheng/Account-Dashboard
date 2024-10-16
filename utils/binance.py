@@ -38,7 +38,7 @@ async def init_db(user: str):
     """
     初始化数据库表：用于存储总权益和净持仓数据
     """
-    db_name = 'trading_data.db'
+    db_name = '/var/lib/grafana/trading_data.db'
     if os.path.exists(db_name):
         return 
     async with aiosqlite.connect(db_name) as conn:
@@ -89,7 +89,7 @@ async def update_data(exchange: ccxt.Exchange, user: str):
                                        (timestamp, symbol, amount if pos['side'] == 'long' else -amount))
             if len(active_positions) == 0:
                 await conn.execute(f"INSERT OR REPLACE INTO {user}_net_positions VALUES (?, ?, ?)", 
-                                       (timestamp, "BTCUSDT", 0))
+                                       (timestamp, "BTC/USDT", 0))
             # 记录日志
             logger.info(f"Successfully fetched account info. Net value: {net_value}")
             logger.info(f"Number of active positions: {len(active_positions)}")
