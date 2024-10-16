@@ -6,7 +6,7 @@ import ccxt.async_support as ccxt  # 使用 ccxt 的异步版本
 import logging
 from logging.handlers import RotatingFileHandler
 from constants import BINANCE_UNI_API_KEY, BINANCE_UNI_SECRET
-
+import os
 # 日志文件路径
 LOG_FILE = 'binance_monitor.log'
 
@@ -38,7 +38,10 @@ async def init_db(user: str):
     """
     初始化数据库表：用于存储总权益和净持仓数据
     """
-    async with aiosqlite.connect('trading_data.db') as conn:
+    db_name = 'trading_data.db'
+    if os.path.exists(db_name):
+        return 
+    async with aiosqlite.connect(db_name) as conn:
         await conn.execute(f'''CREATE TABLE IF NOT EXISTS {user}_total_equity
                                (timestamp INTEGER, equity REAL)''')
         await conn.execute(f'''CREATE TABLE IF NOT EXISTS {user}_net_positions
@@ -62,7 +65,7 @@ async def update_data(exchange: ccxt.Exchange, user: str):
             
             # 获取持仓信息
             positions = await exchange.fetch_positions()
-            
+            logger.info(str(positions))
             # 获取 USDT 的总权益
             net_value = float(balance['USDT']['total'])
             await conn.execute(f"INSERT INTO {user}_total_equity VALUES (?, ?)", (timestamp, net_value))
@@ -84,7 +87,9 @@ async def update_data(exchange: ccxt.Exchange, user: str):
                     }
                     await conn.execute(f"INSERT OR REPLACE INTO {user}_net_positions VALUES (?, ?, ?)", 
                                        (timestamp, symbol, amount if pos['side'] == 'long' else -amount))
-
+            if len(active_positions) == 0:
+                await conn.execute(f"INSERT OR REPLACE INTO {user}_net_positions VALUES (?, ?, ?)", 
+                                       (timestamp, symbol, 0))
             # 记录日志
             logger.info(f"Successfully fetched account info. Net value: {net_value}")
             logger.info(f"Number of active positions: {len(active_positions)}")
